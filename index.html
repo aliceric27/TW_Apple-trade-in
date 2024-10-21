@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Apple Trade In Price Charts</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div id="app">
+    <span>*15系列採用該型號發售最低規格為定價</span>
+    <div v-for="(chart, index) in charts" :key="index">
+      <h2>{{ chart.title }}</h2>
+      <canvas :id="chart.id"></canvas>
+    </div>
+  </div>
+
+  <script >
+    new Vue({
+      el: '#app',
+      data: {
+        charts: [
+          {
+            title: '2024 Taiwan Apple Trade In 價格 - iPhone',
+            id: 'iphoneChart',
+            labels: [
+              'iPhone 15 Pro Max', 'iPhone 15 Pro', 'iPhone 15 Plus', 'iPhone 15', 'iPhone 14 Pro Max',
+              'iPhone 14 Pro', 'iPhone 14 Plus', 'iPhone 14', 'iPhone SE (第 3 代)', 'iPhone 13 Pro Max',
+              'iPhone 13 Pro', 'iPhone 13', 'iPhone 13 mini', 'iPhone 12 Pro Max', 'iPhone 12 Pro',
+              'iPhone 12', 'iPhone 12 mini', 'iPhone SE (第 2 代)', 'iPhone 11 Pro Max', 'iPhone 11 Pro',
+              'iPhone 11', 'iPhone XS Max', 'iPhone XS', 'iPhone XR', 'iPhone X', 'iPhone 8 Plus', 'iPhone 8',
+              'iPhone 7 Plus', 'iPhone 7', 'iPhone 6s Plus', 'iPhone 6s', 'iPhone 6 Plus', 'iPhone 6',
+              'iPhone SE (第 1 代)'
+            ],
+            datasets: [
+              {
+                label: '2024/3 預估 Trade In 價格 (NTD)',
+                data: [44900, 36900, 29900, 25900, 23000, 21000, 14700, 14300, 4800, 19100, 15400, 11300, 10500, 11900, 10500, 8000, 6100, 2500, 9000, 7200, 6200, 5300, 4000, 4600, 3300, 2500, 2400, 1300, 0, 0, 0, 0, 0],
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1
+              },
+              {
+                label: '2024/9 預估 Trade In 價格 (NTD)',
+                data: [23600, 20400, 18100, 16100, 19000, 16200, 12400, 11600, 3900, 13200, 11900, 9100, 8200, 10000, 8000, 6200, 5000, 2000, 7300, 5700, 4900, 4100, 2800, 3100, 2300, 2100, 1500, 1300, 0, 0, 0, 0, 0],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+              },
+              {
+                label: '價差 (2024/3 - 2024/9) (NTD)',
+                data: [21300, 16500, 11800, 9800, 4000, 4800, 2300, 2700, 900, 5900, 3500, 2200, 2300, 1900, 2500, 1800, 1100, 500, 1700, 1500, 1300, 1200, 1200, 1500, 1000, 400, 900, 0, 0, 0, 0, 0],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+              }
+            ]
+          },
+          {
+            title: '2024 Apple Trade In 價格 - Apple Watch',
+            id: 'watchChart',
+            labels: [
+              'Apple Watch Ultra 2', 'Apple Watch Series 9', 'Apple Watch Ultra', 'Apple Watch Series 8',
+              'Apple Watch SE (第 2 代)', 'Apple Watch Series 7', 'Apple Watch Series 6', 'Apple Watch SE (第 1 代)',
+              'Apple Watch Series 5', 'Apple Watch Series 4'
+            ],
+            data: [10400, 5700, 8900, 4000, 2000, 3200, 2350, 1500, 1700, 950]
+          },
+            {
+            title: '2024 Apple Trade In 價格 - iPad',
+            id: 'iPadChart',
+            labels: ['iPad Pro', 'iPad Air', 'AiPad', 'iPad mini'],
+            datasets: [
+              {
+                label: '預估 Trade In 價格 (NTD)',
+                data: [34600, 9300, 8500, 8200],
+                backgroundColor: 'rgba(27, 69, 169, 0.2)',
+                borderColor: 'rgba(27, 69, 169, 1)',
+                borderWidth: 1
+              }
+            ]
+          },
+          {
+            title: '2024 Apple Trade In 價格 - Mac',
+            id: 'macChart',
+            labels: [
+              'MacBook Pro', 'MacBook Air', 'MacBook', 'iMac'
+            ],
+            datasets: [
+              {
+                label: '預估 Trade In 價格 (NTD)',
+                data: [23400, 10000, 2100, 10100],
+                backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 1
+              }
+            ]
+          }
+      ]
+      },
+      mounted() {
+        this.charts.forEach(chart => {
+          this.createChart(chart);
+        });
+      },
+      methods: {
+        createChart(chart) {
+          const ctx = document.getElementById(chart.id).getContext('2d');
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: chart.labels,
+              datasets: chart.datasets || [{
+                label: '預估 Trade In 價格 (NTD)',
+                data: chart.data,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+        }
+      }
+    });
+  </script>
+</body>
+</html>
