@@ -4,24 +4,89 @@
   <title>Apple Trade In Price Charts</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body{
+      margin: 0;
+    }
+    #app {
+      display: flex;
+      font-family: Arial, sans-serif;
+    }
+    #sidebar {
+      width: 200px;
+      padding: 10px;
+      background-color: #2c3e50;
+      color: white;
+      transition: width 0.3s;
+    }
+    #sidebar.collapsed {
+    width: 60px; /* 改進後的寬度 */
+    overflow: hidden; /* 確保內容不會溢出 */
+    }
+    #sidebar.collapsed button {
+      text-align: center;
+    }
+    #sidebar button {
+      margin-bottom: 10px;
+      width: 100%;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    #sidebar button:hover {
+      background-color: #2980b9;
+    }
+
+    #content {
+      flex-grow: 1;
+      padding: 20px;
+      background-color: #ecf0f1;
+      min-height: 100vh;
+    }
+    .chart-container {
+      display: none;
+    }
+    .chart-container.active {
+      display: block;
+    }
+    h2 {
+      color: #34495e;
+    }
+  </style>
 </head>
 <body>
   <div id="app">
-    <span>*15系列採用該型號發售最低規格為定價</span>
-    <div v-for="(chart, index) in charts" :key="index">
-      <h2>{{ chart.title }}</h2>
-      <canvas :id="chart.id"></canvas>
+    <!-- 側邊欄 -->
+    <div id="sidebar" :class="{ collapsed: isCollapsed }">
+      <button v-for="(chart, index) in charts" :key="index" @click="showChart(index)">
+        {{ isCollapsed ? chart.title[0] : `${chart.catage}` }}
+      </button>
+    </div>
+
+    <!-- 圖表區域 -->
+    <div id="content">
+      <span>*15系列採用該型號發售最低規格為定價</span>
+      <div v-for="(chart, index) in charts" :key="index" :class="['chart-container', { active: index === activeChartIndex }]">
+        <h2>{{ chart.title }}</h2>
+        <canvas :id="chart.id"></canvas>
+      </div>
     </div>
   </div>
 
-  <script >
+  <script>
     new Vue({
       el: '#app',
       data: {
+        activeChartIndex: 0, // 預設顯示第一個圖表（iPhone圖表）
         charts: [
           {
             title: '2024 Taiwan Apple Trade In 價格 - iPhone',
             id: 'iphoneChart',
+            catage:'iPhone',
             labels: [
               'iPhone 15 Pro Max', 'iPhone 15 Pro', 'iPhone 15 Plus', 'iPhone 15', 'iPhone 14 Pro Max',
               'iPhone 14 Pro', 'iPhone 14 Plus', 'iPhone 14', 'iPhone SE (第 3 代)', 'iPhone 13 Pro Max',
@@ -57,6 +122,7 @@
           },
           {
             title: '2024 Apple Trade In 價格 - Apple Watch',
+            catage:'Apple Watch',
             id: 'watchChart',
             labels: [
               'Apple Watch Ultra 2', 'Apple Watch Series 9', 'Apple Watch Ultra', 'Apple Watch Series 8',
@@ -65,8 +131,9 @@
             ],
             data: [10400, 5700, 8900, 4000, 2000, 3200, 2350, 1500, 1700, 950]
           },
-            {
+          {
             title: '2024 Apple Trade In 價格 - iPad',
+            catage:'iPad',
             id: 'iPadChart',
             labels: ['iPad Pro', 'iPad Air', 'AiPad', 'iPad mini'],
             datasets: [
@@ -82,6 +149,7 @@
           {
             title: '2024 Apple Trade In 價格 - Mac',
             id: 'macChart',
+            catage:'Mac',
             labels: [
               'MacBook Pro', 'MacBook Air', 'MacBook', 'iMac'
             ],
@@ -95,17 +163,20 @@
               }
             ]
           }
-      ]
+        ],
       },
       mounted() {
-        this.charts.forEach(chart => {
+        this.charts.forEach((chart) => {
           this.createChart(chart);
         });
       },
       methods: {
+        showChart(index) {
+          this.activeChartIndex = index;
+        },
         createChart(chart) {
           const ctx = document.getElementById(chart.id).getContext('2d');
-          new Chart(ctx, {
+          chart.chartInstance = new Chart(ctx, {
             type: 'bar',
             data: {
               labels: chart.labels,
@@ -119,11 +190,11 @@
             },
             options: {
               responsive: true,
-              scales: {
-                y: {
-                  beginAtZero: true
-                }
-              }
+              // scales: {
+              //   x: {
+              //     beginAtZero: true
+              //   }
+              // },
             }
           });
         }
