@@ -69,7 +69,7 @@
 
     <!-- 圖表區域 -->
     <div id="content">
-      <span>*15系列採用該型號發售最低規格為定價</span>
+      <span v-if="activeChartIndex===0">*15系列採用該型號發售最低規格為定價</span>
       <div v-for="(chart, index) in charts" :key="index" :class="['chart-container', { active: index === activeChartIndex }]">
         <h2>{{ chart.title }}</h2>
         <canvas :id="chart.id"></canvas>
