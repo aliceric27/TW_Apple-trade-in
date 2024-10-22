@@ -2,74 +2,19 @@
 <html>
 <head>
   <title>Apple Trade In Price Charts</title>
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body{
-      margin: 0;
-    }
-    #app {
-      display: flex;
-      font-family: Arial, sans-serif;
-    }
-    #sidebar {
-      width: 200px;
-      padding: 10px;
-      background-color: #2c3e50;
-      color: white;
-      transition: width 0.3s;
-    }
-    #sidebar.collapsed {
-    width: 60px; /* 改進後的寬度 */
-    overflow: hidden; /* 確保內容不會溢出 */
-    }
-    #sidebar.collapsed button {
-      text-align: center;
-    }
-    #sidebar button {
-      margin-bottom: 10px;
-      width: 100%;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    #sidebar button:hover {
-      background-color: #2980b9;
-    }
-
-    #content {
-      flex-grow: 1;
-      padding: 20px;
-      background-color: #ecf0f1;
-      min-height: 100vh;
-    }
-    .chart-container {
-      display: none;
-    }
-    .chart-container.active {
-      display: block;
-    }
-    h2 {
-      color: #34495e;
-    }
-  </style>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css"> 
 </head>
 <body>
   <div id="app">
-    <!-- 側邊欄 -->
     <div id="sidebar" :class="{ collapsed: isCollapsed }">
       <button v-for="(chart, index) in charts" :key="index" @click="showChart(index)">
-        {{ isCollapsed ? chart.title[0] : `${chart.catage}` }}
+        {{ isCollapsed ? chart.title[0] : chart.catage }}
       </button>
     </div>
 
-    <!-- 圖表區域 -->
     <div id="content">
-      <span v-if="activeChartIndex===0">*15系列採用該型號發售最低規格為定價</span>
+      <span v-if="activeChartIndex ===0">*15系列採用該型號發售最低規格為定價</span>
       <div v-for="(chart, index) in charts" :key="index" :class="['chart-container', { active: index === activeChartIndex }]">
         <h2>{{ chart.title }}</h2>
         <canvas :id="chart.id"></canvas>
@@ -77,129 +22,90 @@
     </div>
   </div>
 
-  <script>
-    new Vue({
-      el: '#app',
-      data: {
-        activeChartIndex: 0, // 預設顯示第一個圖表（iPhone圖表）
-        charts: [
-          {
-            title: '2024 Taiwan Apple Trade In 價格 - iPhone',
-            id: 'iphoneChart',
-            catage:'iPhone',
-            labels: [
-              'iPhone 15 Pro Max', 'iPhone 15 Pro', 'iPhone 15 Plus', 'iPhone 15', 'iPhone 14 Pro Max',
-              'iPhone 14 Pro', 'iPhone 14 Plus', 'iPhone 14', 'iPhone SE (第 3 代)', 'iPhone 13 Pro Max',
-              'iPhone 13 Pro', 'iPhone 13', 'iPhone 13 mini', 'iPhone 12 Pro Max', 'iPhone 12 Pro',
-              'iPhone 12', 'iPhone 12 mini', 'iPhone SE (第 2 代)', 'iPhone 11 Pro Max', 'iPhone 11 Pro',
-              'iPhone 11', 'iPhone XS Max', 'iPhone XS', 'iPhone XR', 'iPhone X', 'iPhone 8 Plus', 'iPhone 8',
-              'iPhone 7 Plus', 'iPhone 7', 'iPhone 6s Plus', 'iPhone 6s', 'iPhone 6 Plus', 'iPhone 6',
-              'iPhone SE (第 1 代)'
-            ],
-            datasets: [
-              {
-                label: '2024/3 預估 Trade In 價格 (NTD)',
-                data: [44900, 36900, 29900, 25900, 23000, 21000, 14700, 14300, 4800, 19100, 15400, 11300, 10500, 11900, 10500, 8000, 6100, 2500, 9000, 7200, 6200, 5300, 4000, 4600, 3300, 2500, 2400, 1300, 0, 0, 0, 0, 0],
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgba(153, 102, 255, 1)',
-                borderWidth: 1
-              },
-              {
-                label: '2024/9 預估 Trade In 價格 (NTD)',
-                data: [23600, 20400, 18100, 16100, 19000, 16200, 12400, 11600, 3900, 13200, 11900, 9100, 8200, 10000, 8000, 6200, 5000, 2000, 7300, 5700, 4900, 4100, 2800, 3100, 2300, 2100, 1500, 1300, 0, 0, 0, 0, 0],
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-              },
-              {
-                label: '價差 (2024/3 - 2024/9) (NTD)',
-                data: [21300, 16500, 11800, 9800, 4000, 4800, 2300, 2700, 900, 5900, 3500, 2200, 2300, 1900, 2500, 1800, 1100, 500, 1700, 1500, 1300, 1200, 1200, 1500, 1000, 400, 900, 0, 0, 0, 0, 0],
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1
-              }
-            ]
-          },
-          {
-            title: '2024 Apple Trade In 價格 - Apple Watch',
-            catage:'Apple Watch',
-            id: 'watchChart',
-            labels: [
-              'Apple Watch Ultra 2', 'Apple Watch Series 9', 'Apple Watch Ultra', 'Apple Watch Series 8',
-              'Apple Watch SE (第 2 代)', 'Apple Watch Series 7', 'Apple Watch Series 6', 'Apple Watch SE (第 1 代)',
-              'Apple Watch Series 5', 'Apple Watch Series 4'
-            ],
-            data: [10400, 5700, 8900, 4000, 2000, 3200, 2350, 1500, 1700, 950]
-          },
-          {
-            title: '2024 Apple Trade In 價格 - iPad',
-            catage:'iPad',
-            id: 'iPadChart',
-            labels: ['iPad Pro', 'iPad Air', 'AiPad', 'iPad mini'],
-            datasets: [
-              {
-                label: '預估 Trade In 價格 (NTD)',
-                data: [34600, 9300, 8500, 8200],
-                backgroundColor: 'rgba(27, 69, 169, 0.2)',
-                borderColor: 'rgba(27, 69, 169, 1)',
-                borderWidth: 1
-              }
-            ]
-          },
-          {
-            title: '2024 Apple Trade In 價格 - Mac',
-            id: 'macChart',
-            catage:'Mac',
-            labels: [
-              'MacBook Pro', 'MacBook Air', 'MacBook', 'iMac'
-            ],
-            datasets: [
-              {
-                label: '預估 Trade In 價格 (NTD)',
-                data: [23400, 10000, 2100, 10100],
-                backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                borderColor: 'rgba(255, 159, 64, 1)',
-                borderWidth: 1
-              }
-            ]
+  <script type="module">
+    import { createApp, ref, onMounted, watch, nextTick } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+    const App = {
+      setup() {
+        const activeChartIndex = ref(0)
+        const isCollapsed = ref(false)
+        const charts = ref([])
+        const chartInstances = ref({})
+
+        const createOrUpdateChart = (chart) => {
+          const ctx = document.getElementById(chart.id)
+          if (!ctx) return
+
+          if (chartInstances.value[chart.id]) {
+            chartInstances.value[chart.id].destroy()
           }
-        ],
-      },
-      mounted() {
-        this.charts.forEach((chart) => {
-          this.createChart(chart);
-        });
-      },
-      methods: {
-        showChart(index) {
-          this.activeChartIndex = index;
-        },
-        createChart(chart) {
-          const ctx = document.getElementById(chart.id).getContext('2d');
-          chart.chartInstance = new Chart(ctx, {
+
+          chartInstances.value[chart.id] = new Chart(ctx, {
             type: 'bar',
             data: {
               labels: chart.labels,
-              datasets: chart.datasets || [{
-                label: '預估 Trade In 價格 (NTD)',
-                data: chart.data,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-              }]
+              datasets: chart.datasets
             },
             options: {
               responsive: true,
-              // scales: {
-              //   x: {
-              //     beginAtZero: true
-              //   }
-              // },
+              animation: false,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'top'
+                }
+              },
+              scales: {
+                x: {
+                  ticks: {
+                    autoSkip: false,
+                    maxRotation: 90,
+                    minRotation: 90
+                  }
+                },
+                y: {
+                  beginAtZero: true
+                }
+              }
             }
-          });
+          })
+        }
+
+        const showChart = (index) => {
+          activeChartIndex.value = index
+        }
+
+        onMounted(async () => {
+          try {
+            const response = await fetch('chartData.json')
+            const data = await response.json()
+            charts.value = data.charts
+            await nextTick()
+            charts.value.forEach(createOrUpdateChart)
+          } catch (error) {
+            console.error('Error loading chart data:', error)
+          }
+        })
+
+        watch(activeChartIndex, (newIndex) => {
+          nextTick(() => {
+            const chart = charts.value[newIndex]
+            if (chart) {
+              createOrUpdateChart(chart)
+            }
+          })
+        })
+
+        return {
+          activeChartIndex,
+          isCollapsed,
+          charts,
+          showChart
         }
       }
-    });
+    }
+
+    createApp(App).mount('#app')
   </script>
 </body>
 </html>
